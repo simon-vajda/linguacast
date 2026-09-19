@@ -1,3 +1,7 @@
+import { logger } from './log';
+
+const log = logger('error');
+
 /** Mirrors the Problem schema in @linguacast/contract/schemas. */
 export interface Problem {
   code: string;
@@ -23,6 +27,16 @@ export function toProblem(err: unknown): Problem {
   if (err instanceof AppError) {
     return { code: err.code, message: err.message };
   }
-  console.error('Unhandled error:', err);
+  // Name, message and stack only. A socket handler's state carries the event PIN, so
+  // reproducing an arbitrary thrown value here would put a listening credential into the
+  // log an operator is told to paste into a ticket.
+  log.error(`Unhandled error: ${describeThrown(err)}`);
   return { code: 'internal_error', message: 'An unexpected error occurred.' };
+}
+
+function describeThrown(err: unknown): string {
+  if (!(err instanceof Error)) {
+    return `a non-Error ${typeof err} was thrown`;
+  }
+  return err.stack ?? `${err.name}: ${err.message}`;
 }

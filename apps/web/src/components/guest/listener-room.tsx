@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button';
 import { VersionFooter } from '@/components/version-footer';
 import { useListenerMediaSession } from '@/lib/audio/use-listener-media-session';
 import { useMediaSessionCarrier } from '@/lib/audio/use-media-session-carrier';
+import { logError } from '@/lib/log';
 import { isSuperseded, useMedia } from '@/lib/media/use-media';
 import { cn } from '@/lib/utils';
 
@@ -161,7 +162,7 @@ export function ListenerRoom({
       case 'resume':
         void element
           ?.play()
-          .catch((cause) => console.error('media: could not resume audio playback', cause));
+          .catch((cause) => logError('media: could not resume audio playback', cause));
         return;
       case 'ignore':
         return;
@@ -287,7 +288,7 @@ export function ListenerRoom({
       element.srcObject = new MediaStream([track]);
       void element
         .play()
-        .catch((cause) => console.error('media: could not start audio playback', cause));
+        .catch((cause) => logError('media: could not start audio playback', cause));
     };
 
     const report = (requestedSlug: string, cause: unknown) => {
@@ -297,7 +298,7 @@ export function ListenerRoom({
         playbackIntentRef.current.online &&
         !isSuperseded(cause)
       ) {
-        console.error('media: could not listen', cause);
+        logError('media: could not listen', cause);
       }
     };
 

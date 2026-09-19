@@ -1,6 +1,9 @@
 import type { Context, MiddlewareHandler } from 'hono';
 import { env } from '../../env';
+import { logger } from '../../lib/log';
 import { TokenBucketLimiter } from '../../lib/rate-limit';
+
+const log = logger('proxy');
 
 /** The whole server shares one budget behind the per-IP one, so it needs one key. */
 const SHARED_KEY = '*';
@@ -22,17 +25,34 @@ export function clientIp(
   const incoming = (c.env as { incoming?: { socket?: { remoteAddress?: string } } } | undefined)
     ?.incoming;
   const remote = incoming?.socket?.remoteAddress;
+  const from = remote ? normalizeAddress(remote) : undefined;
+  const appended = c.req.header('x-forwarded-for')?.split(',').at(-1)?.trim();
 
-  if (remote && trustedProxies.includes(normalizeAddress(remote))) {
-    const appended = c.req.header('x-forwarded-for')?.split(',').at(-1)?.trim();
+  if (from !== undefined && trustedProxies.includes(from)) {
     if (appended) {
       return normalizeAddress(appended);
     }
+    // Both halves of the setting are right and it still does nothing: the proxy was
+    // listed but never told to append the header, so every visitor arrives as the proxy
+    // and one guesser spends the throttle budget for all of them. Nothing else says so.
+    log.warnOnce(
+      'proxy:no-forwarded-header',
+      'A listed trusted proxy sent no X-Forwarded-For header, so every visitor shares ' +
+        "one throttle bucket. Configure the proxy to append the client's address.",
+    );
+  } else if (appended && trustedProxies.length > 0) {
+    // Named, not judged: a container bridge address is indistinguishable from a stray
+    // client's forged header here, and only the operator knows which this is.
+    log.warnOnce(
+      `proxy:untrusted-forwarder:${from ?? 'unknown'}`,
+      `An X-Forwarded-For header arrived from ${from ?? 'an unidentifiable address'}, which ` +
+        'is not in TRUSTED_PROXY_IPS, so it was ignored. If that is your proxy, list it.',
+    );
   }
 
   // 'unknown' collapses every unidentifiable caller into one bucket, throttling them
   // together rather than exempting them.
-  return remote ? normalizeAddress(remote) : 'unknown';
+  return from ?? 'unknown';
 }
 
 export interface RateLimitOptions {

@@ -237,9 +237,26 @@ skipped when `MEDIA_STUN_URL` is empty.
 | The studio cannot open the microphone; signing in does nothing | You are on plain HTTP | Use the proxy's HTTPS URL, not `http://<host>:3000` |
 | Container exits with `/data is not writable` | Read-only mount, or a uid that does not own the directory | Drop the `:ro`; set `PUID`/`PGID` to the owner, or `chown` it on the host if you set Docker's `user:` yourself |
 | A correct password is refused after a few tries | `TRUSTED_PROXY_IPS` unset behind a proxy | See the table above |
+| Everyone shares one throttle bucket although `TRUSTED_PROXY_IPS` is set | The proxy is listed but is not appending `X-Forwarded-For`, or reaches the server from an address you did not list | The log warns about each of these once, naming the address it saw in the second case |
 | Only listeners on your own LAN hear nothing | Your router does not do NAT hairpinning | Split-horizon DNS on the LAN — a router problem, not a LinguaCast one |
 | Container exits naming private or loopback addresses | The hostname is resolved by a LAN resolver, not the public one | Set `PUBLIC_ADDRESS` to your public address directly, or give the container a resolver that answers with it |
 | Audio breaks for some listeners, not others | Not a deployment fault | [`docs/solutions/operations/diagnosing-live-audio-from-a-user-report.md`](solutions/operations/diagnosing-live-audio-from-a-user-report.md) |
+
+## Reading the log
+
+`docker compose logs linguacast` is the whole of your monitoring. It is written to be
+pasted into a bug report as-is: the first line names the version, every line after it
+carries the time the server stamped on it, and what you get by default is sized to answer
+a support question without anybody asking you to turn anything on. A healthy event costs
+the same handful of lines whether five people listened or five hundred. A broken one is
+louder on purpose: the warning that a connection carried no audio is written per
+connection, so a deployment whose audio reaches nobody will say so once per listener.
+
+If someone asks you for more, set `LOG_VERBOSE=true`, recreate the container, reproduce
+the problem, then set it back and recreate again. Verbose output includes **the network
+addresses of everyone listening**. Read the excerpt before you send it, and decide for
+yourself whether sharing that is acceptable for your congregation — nobody else can make
+that call for you.
 
 ## What this deployment cannot serve
 
@@ -262,6 +279,7 @@ default, and the last four rows are ones you should not normally need to touch.
 | `MEDIA_MAX_WORKERS` | `4` | How many CPU cores LinguaCast may use, which is how many events can run at once. Capped by the host's core count; each core in use needs one RTC port. |
 | `MEDIA_RTC_PORT_BASE` | `44400` | The first RTC port; the rest count up from it, one per core in use, on UDP and TCP. Change it and change the publications and the router forwarding. |
 | `MEDIA_STUN_URL` | `stun:stun.l.google.com:19302` | Helps a guest behind a restrictive NAT discover the address to advertise. Empty uses none. |
+| `LOG_VERBOSE` | `false` | Adds per-connection detail to the log, including listeners' network addresses. Turn it on only while reproducing a problem, and off again after. |
 | `PUID` / `PGID` | `1000` | The uid/gid the server runs as, and the owner the container gives the data directory. |
 | `MEDIA_ROOM_IDLE_GRACE_MS` | `60000` | How long an event's router survives with nobody on it. Shorter renegotiates every guest across a gap between broadcasts. |
 | `DATA_DIR` | `/data` | Where `linguacast.db` and `admin.json` live. Change the mount, not this. |

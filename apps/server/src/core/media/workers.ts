@@ -1,7 +1,10 @@
 import os from 'node:os';
 import { createWorker, type types } from 'mediasoup';
+import { logger } from '../../lib/log';
 import { AppError } from '../../lib/problem';
 import { AUDIO_CODECS, listenInfosFor, type MediaNetworkConfig, workerCountFor } from './config';
+
+const log = logger('media');
 
 /**
  * A deterministic crash cause would otherwise spin a subprocess and pin a core, so an
@@ -91,7 +94,7 @@ export class WorkerPool {
   startupSummary(resolvedAddress?: string): string {
     const ports = [...this.slots.keys()].sort((a, b) => a - b).map((i) => this.net.rtcPortBase + i);
     return [
-      `mediasoup: ${this.slots.size} worker(s) of ${this.hostCpuCount} detected core(s)`,
+      `${this.slots.size} worker(s) of ${this.hostCpuCount} detected core(s)`,
       `ports ${ports.join(', ')} (UDP and TCP)`,
       resolvedAddress && resolvedAddress !== this.net.announcedIp
         ? `guests connect to ${this.net.announcedIp} (${resolvedAddress})`
@@ -185,15 +188,15 @@ export class WorkerPool {
     }
     slot.pending.clear();
 
-    console.error(`mediasoup: worker ${slot.index} died; dropping its rooms`);
+    log.error(`worker ${slot.index} died; dropping its rooms`);
     for (const listener of this.listeners) {
       listener(slot.index, 'worker_died');
     }
 
     const recent = this.recordDeath(slot.index);
     if (recent.length > REPLACEMENT_LIMIT) {
-      console.error(
-        `mediasoup: worker ${slot.index} died ${recent.length} times in ${
+      log.error(
+        `worker ${slot.index} died ${recent.length} times in ${
           REPLACEMENT_WINDOW_MS / 1000
         }s; left down rather than respawned`,
       );
@@ -242,9 +245,9 @@ export class WorkerPool {
   private async replace(index: number): Promise<void> {
     try {
       await this.spawn(index);
-      console.log(`mediasoup: worker ${index} replaced on port ${this.net.rtcPortBase + index}`);
+      log.info(`worker ${index} replaced on port ${this.net.rtcPortBase + index}`);
     } catch (cause) {
-      console.error(`mediasoup: could not replace worker ${index}`, cause);
+      log.error(`could not replace worker ${index}`, cause);
       this.scheduleRetry(index);
     }
   }

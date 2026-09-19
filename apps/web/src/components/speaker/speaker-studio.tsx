@@ -17,6 +17,7 @@ import { SpeakerPreflight } from '@/components/speaker/speaker-preflight';
 import { levelStatus, meterLevel, rms } from '@/lib/audio/level';
 import { useAudioPreferences } from '@/lib/audio/use-audio-preferences';
 import { useMicCapture } from '@/lib/audio/use-mic-capture';
+import { logError } from '@/lib/log';
 import { isSuperseded, useMedia } from '@/lib/media/use-media';
 import {
   type BroadcastEnd,
@@ -181,7 +182,7 @@ export function SpeakerStudio({
         }
         // A reset landed mid-negotiation; its own renegotiation takes over from here.
         if (!isSuperseded(cause)) {
-          console.error('media: could not go live', cause);
+          logError('media: could not go live', cause);
         }
       }
     },
@@ -206,7 +207,7 @@ export function SpeakerStudio({
 
     producedTrack.current = outputTrack;
     void replaceProducerTrack(outputTrack).catch((cause) => {
-      console.error('media: could not switch microphone', cause);
+      logError('media: could not switch microphone', cause);
     });
   }, [hasProducer, outputTrack, replaceProducerTrack]);
 
@@ -408,7 +409,7 @@ export function SpeakerStudio({
       .catch((cause) => {
         setHandoverFailed(true);
         setConfirmedHandover(false);
-        console.error('handover: refused', cause);
+        logError('handover: refused', cause);
       })
       .finally(() => setHandoverBusy(false));
   };
@@ -465,7 +466,7 @@ export function SpeakerStudio({
             }
             setEffectiveMuted(rollbackMuted);
             setLastEnd((previous) => (previous ? { ...previous, muted: rollbackMuted } : previous));
-            console.error('media: could not change mute', cause);
+            logError('media: could not change mute', cause);
           });
         }}
         // Recorded before the close, so the reconnect effect cannot read it as a drop.

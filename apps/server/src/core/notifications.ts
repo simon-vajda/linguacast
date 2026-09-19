@@ -4,6 +4,7 @@
  */
 
 import type { ReportResolution, ReportRow } from '@linguacast/contract/socket';
+import { logger } from '../lib/log';
 
 export type EvictionReason = 'worker_died' | 'access_revoked';
 
@@ -98,7 +99,7 @@ export class NotificationHub {
       try {
         listener(notification);
       } catch (cause) {
-        console.error('notifications: a subscriber threw', cause);
+        logger('notifications').error('a subscriber threw', cause);
       }
     }
   }

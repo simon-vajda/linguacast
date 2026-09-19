@@ -27,10 +27,31 @@
       "preset": "recommended",
       "style": {
         "useBlockStatements": "error"
+      },
+      "suspicious": {
+        "noConsole": "error"
       }
     }
   },
   "overrides": [
+    {
+      "includes": [
+        "apps/server/src/lib/log.ts",
+        "apps/server/src/env.ts",
+        "apps/web/src/lib/log.ts",
+        "apps/mobile/src/log.ts",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/scripts/**"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["apps/web/src/components/ui/**"],
       "linter": {

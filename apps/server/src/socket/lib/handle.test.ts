@@ -62,8 +62,11 @@ describe('handle', () => {
         ok: false,
         error: { code: 'timeout', message: 'Handler for "ping" timed out.' },
       });
-      // The server log must name the event, or a hung handler is unfindable.
+      // The server log must name the event, or a hung handler is unfindable — and it is
+      // always-on, so a wedged handler is visible without the verbose tier.
       expect(logged).toHaveBeenCalledWith(expect.stringContaining('ping'));
+      const line = logged.mock.calls.map(String).find((entry) => entry.includes('ping')) ?? '';
+      expect(line).toMatch(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z socket: /);
     });
 
     it('does not fire the watchdog for a handler that settles in time', async () => {

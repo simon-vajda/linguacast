@@ -21,6 +21,7 @@ import type { SocketClient } from '@linguacast/client-core/socket';
 import type { types } from 'mediasoup-client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSessionTick } from '@/audio/use-session-tick';
+import { logError } from '../log';
 import { loadDevice } from './device';
 import { logIceRecovery, reportTransportPath, watchConsumerTrack } from './diagnostics';
 import { dueDeadlines, stalledSteps } from './ice-clock';
@@ -359,7 +360,7 @@ export function useMedia(socket: SocketClient | null) {
         // would never reopen and never reach `failed` — no replacement, and no Reconnect
         // offered either. A refused `createTransport` is at least loud and retryable, and
         // a socket that never comes back voids this state wholesale on its next connect.
-        console.error('media: could not release the transport server-side', cause);
+        logError('media: could not release the transport server-side', cause);
       } finally {
         // A reconnect landing mid-rebuild has already replaced this session; bumping the
         // generation now would date out the replacement's own transport instead.
@@ -474,7 +475,7 @@ export function useMedia(socket: SocketClient | null) {
         void restart
           .catch((cause) => {
             if (session.current === active && !transport.closed && !isSuperseded(cause)) {
-              console.error(`media: could not recover the transport (attempt ${attempt})`, cause);
+              logError(`media: could not recover the transport (attempt ${attempt})`, cause);
             }
           })
           .finally(() => {
@@ -703,7 +704,7 @@ export function useMedia(socket: SocketClient | null) {
         // release through this promise would name it a failed listen.
         void api
           .closeConsumer(outgoing)
-          .catch((cause) => console.error('media: could not release the replaced consumer', cause));
+          .catch((cause) => logError('media: could not release the replaced consumer', cause));
         return consumer.track;
       });
     },

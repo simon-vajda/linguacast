@@ -43,6 +43,14 @@ const BaseEnvSchema = z.object({
   MEDIA_MAX_WORKERS: z.coerce.number().int().positive().max(64).default(4),
   MEDIA_ROOM_IDLE_GRACE_MS: z.coerce.number().int().positive().optional(),
 
+  // The verbose logging tier: per-transport ICE and DTLS narration, and the guest
+  // addresses that go with it. Off by default because the always-on tier is sized to
+  // diagnose a ticket without it, and its volume would bury that tier at event scale.
+  LOG_VERBOSE: z
+    .string()
+    .default('')
+    .transform((value) => ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase())),
+
   // Defaulted rather than left off: a guest behind a symmetric NAT needs one to discover
   // the address to advertise, and a deployment shipping without it fails for exactly the
   // guests least able to diagnose it. Set the variable empty to decline the default — a

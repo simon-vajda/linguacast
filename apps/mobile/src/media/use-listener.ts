@@ -16,6 +16,7 @@ import {
 } from '@linguacast/client-core/media';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useEventSocket } from '@/socket/provider';
+import { logError } from '../log';
 import { isSuperseded } from './use-media';
 
 export interface ListenerView {
@@ -184,7 +185,7 @@ export function useListener(input: {
         intentRef.current.online &&
         !isSuperseded(cause)
       ) {
-        console.error('media: could not listen', cause);
+        logError('media: could not listen', cause);
       }
     };
 

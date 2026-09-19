@@ -5,6 +5,7 @@ import { env } from './env';
 import { defaultHook } from './http/default-hook';
 import { apiRoutes } from './http/routes';
 import { createSpaRoutes } from './http/spa.routes';
+import { logger } from './lib/log';
 import { toProblem } from './lib/problem';
 import { SERVER_VERSION } from './version';
 
@@ -30,7 +31,7 @@ const spaRoutes = createSpaRoutes(env.WEB_ROOT);
 if (spaRoutes) {
   app.route('/', spaRoutes);
 } else {
-  console.log(`SPA serving disabled (no build output at ${env.WEB_ROOT})`);
+  logger('boot').info(`SPA serving disabled (no build output at ${env.WEB_ROOT})`);
 }
 
 // Covers the unmatched non-GET case, and the whole server when there is no SPA build.

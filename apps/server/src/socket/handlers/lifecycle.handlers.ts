@@ -12,9 +12,12 @@ import type { Notification } from '../../core/notifications';
 import { presence } from '../../core/presence';
 import { reports } from '../../core/reports';
 import type { Db } from '../../db/client';
+import { logger } from '../../lib/log';
 import { channelRoom, eventRoom } from '../lib/rooms';
 import { broadcastHandoverState } from './handover.handlers';
 import { type ReportsSocket, sendInitialReports } from './reports.handlers';
+
+const log = logger('socket');
 
 /** The subset of Server this module needs; a real Server satisfies it. */
 export interface LifecycleServer {
@@ -298,6 +301,6 @@ function seed(send: () => void, socketId: string, what: string): void {
   try {
     send();
   } catch (cause) {
-    console.error(`socket: could not send the initial ${what} to ${socketId}`, cause);
+    log.error(`could not send the initial ${what} to ${socketId}`, cause);
   }
 }

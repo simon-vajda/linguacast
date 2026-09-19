@@ -250,6 +250,20 @@ describe('WorkerPool worker death', () => {
     await pool.close();
   });
 
+  it('logs the death always-on, timestamped and under the media prefix', async () => {
+    const { pool, spawned } = harness({ maxWorkers: 2 }, 2);
+    await pool.start();
+
+    spawned[1]?.die();
+    await vi.waitFor(() =>
+      expect(errors.some((line) => line.includes('worker 1 died'))).toBe(true),
+    );
+
+    const line = errors.find((entry) => entry.includes('worker 1 died')) ?? '';
+    expect(line).toMatch(/^\d{4}-\d{2}-\d{2}T[\d:.]+Z media: /);
+    await pool.close();
+  });
+
   it('starts a replacement at the same index and the same port', async () => {
     const { pool, spawned } = harness({ maxWorkers: 2 }, 2);
     await pool.start();

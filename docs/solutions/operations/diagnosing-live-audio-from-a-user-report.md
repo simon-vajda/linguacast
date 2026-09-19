@@ -49,6 +49,35 @@ expected failure sequence rather than a set of unrelated faults.
    capabilities on their own. Listener playback returns to idle because link loss clears its
    bounded recovery hold.
 
+## What the log gives you before you ask for anything
+
+Logging has two tiers. The **always-on** tier is sized so that a log pasted straight out of
+`docker compose logs` answers the checks below on its own: it carries the server version,
+the media configuration, both trusted-proxy misconfigurations, the three silent-failure
+warnings (a transport that never connected, a producer receiving no RTP, a consumer
+sending none), worker death and replacement, room-creation failure, socket handler
+timeouts, unhandled errors, and a per-channel timeline of going on air and off air with
+the listener count at each boundary and the peak between them. The timeline's cost is
+flat per event — there is no always-on line per listener — so a healthy hundred-listener
+event and a healthy five-listener one produce comparable volume. The silent-failure
+warnings are per connection, so a deployment carrying no audio at all is loud in
+proportion to its audience; that is the signal, not noise.
+
+What is **not** always-on: a transport that connected and later dropped, and a DTLS
+failure after a successful handshake. Both are per-connection narration and live in the
+verbose tier. Every line carries a timestamp the server
+emits itself and a subsystem prefix.
+
+The **verbose** tier is off unless the operator sets `LOG_VERBOSE`. It adds the
+per-transport narration: creation with its offered candidates, ICE and DTLS progress, the
+selected candidate pair, close — and the short transport identifiers and **the network
+addresses of the people listening** that go with them.
+
+Ask for verbose only when the always-on tier has not settled it, and say this when you
+ask: turn it on, reproduce the problem, turn it back off, and **read the excerpt before
+pasting it into a ticket** — it names guests' addresses, and whether that disclosure is
+acceptable for a particular congregation is the operator's judgment, not ours.
+
 ## First things to check, in order
 
 1. Ask the affected listener what their active Channel screen says. **"Interpreter muted"**
@@ -56,17 +85,29 @@ expected failure sequence rather than a set of unrelated faults.
    intentionally, so audio resumes without any infrastructure repair. Admin and Channel lists
    remain "On air" in this state by design. See
    [Separate channel liveness from listener mute state](../conventions/separate-channel-liveness-from-listener-mute-state.md).
-2. The process is alive.
+2. The process is alive, and the version on its first log line is the one they think they
+   are running.
 3. The announced address in the startup log is the router's public address. A stale value
    is the most common silent failure: the candidates are well-formed and unreachable, and
-   nothing errors anywhere. On a dynamic residential IP this is a DDNS problem.
+   nothing errors anywhere. On a dynamic residential IP this is a DDNS problem. The
+   always-on log says so from the other side too: a transport that has not connected
+   within the silence window warns, with no verbose tier needed.
 4. The guest link works from off the venue network — open it on mobile data. Silence there
    with audio on the LAN means the announced address is wrong.
 5. The number of `mediasoup-worker` processes matches the configured worker count. The
    startup line prints the count against the detected core count; under Docker
    `os.cpus()` reports the host's cores rather than a `--cpus` quota, so a mismatch there
    is a misconfigured container.
-6. If only one event is affected, its listener count against the capacity guideline.
+6. If only one event is affected, its listener count against the capacity guideline. The
+   channel timeline gives it without asking: each off-air line carries the peak reached
+   while that channel was live.
+7. Whether the channel was live at all at the time they name. The timeline's on-air and
+   off-air lines, and the claim moving between studios, settle "it went quiet at 10:15"
+   against "nobody was broadcasting then" without a round trip.
+8. If a reverse proxy fronts the deployment, whether either trusted-proxy warning fired.
+   Both are silent failures otherwise: a listed proxy that appends no forwarded header
+   puts every visitor in one throttle bucket, and a forwarded header from an unlisted
+   address is discarded.
 
 ## Capacity, and why the number is soft
 

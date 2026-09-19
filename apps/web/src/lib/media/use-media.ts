@@ -24,6 +24,7 @@ import {
 import type { SocketClient } from '@linguacast/client-core/socket';
 import type { types } from 'mediasoup-client';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { logError } from '@/lib/log';
 import { loadDevice } from './device';
 import { logIceRecovery, reportTransportPath, watchConsumerTrack } from './diagnostics';
 import { openTransport } from './transport';
@@ -313,7 +314,7 @@ export function useMedia(socket: SocketClient | null) {
           // would never reopen and never reach `failed` — no replacement, and no Reconnect
           // offered either. A refused `createTransport` is at least loud and retryable, and
           // a socket that never comes back voids this state wholesale on its next connect.
-          console.error('media: could not release the transport server-side', cause);
+          logError('media: could not release the transport server-side', cause);
         } finally {
           // Renegotiating, not in trouble. Left at `trouble` the link reads as down, `online`
           // is false, and the effects that would open the replacement decline to — the
@@ -414,7 +415,7 @@ export function useMedia(socket: SocketClient | null) {
           void restart
             .catch((cause) => {
               if (session.current === active && !transport.closed && !isSuperseded(cause)) {
-                console.error(`media: could not recover the transport (attempt ${attempt})`, cause);
+                logError(`media: could not recover the transport (attempt ${attempt})`, cause);
               }
             })
             .finally(() => {
@@ -717,7 +718,7 @@ export function useMedia(socket: SocketClient | null) {
         // release through this promise would name it a failed listen.
         void api
           .closeConsumer(outgoing)
-          .catch((cause) => console.error('media: could not release the replaced consumer', cause));
+          .catch((cause) => logError('media: could not release the replaced consumer', cause));
         return consumer.track;
       }),
     [ensureTransport, negotiateConsumer, socket, trackPending],

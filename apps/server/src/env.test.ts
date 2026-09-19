@@ -52,6 +52,24 @@ describe('EnvSchema media configuration', () => {
   });
 });
 
+describe('EnvSchema verbose logging', () => {
+  it('leaves the verbose tier off when unset', () => {
+    expect(EnvSchema.parse({}).LOG_VERBOSE).toBe(false);
+  });
+
+  it('accepts the spellings an operator is likely to type', () => {
+    for (const value of ['1', 'true', 'TRUE', 'yes', 'on', ' true ']) {
+      expect(EnvSchema.parse({ LOG_VERBOSE: value }).LOG_VERBOSE).toBe(true);
+    }
+  });
+
+  it('reads anything else as off, so a typo does not enable it', () => {
+    for (const value of ['', '0', 'false', 'off', 'verbose']) {
+      expect(EnvSchema.parse({ LOG_VERBOSE: value }).LOG_VERBOSE).toBe(false);
+    }
+  });
+});
+
 describe('EnvSchema data directory', () => {
   it('defaults to ./data, holding both the database and the credential file', () => {
     expect(EnvSchema.parse({}).DATA_DIR).toBe('./data');

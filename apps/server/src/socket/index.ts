@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { notifications } from '../core/notifications';
 import { presence } from '../core/presence';
 import { db } from '../db';
+import { logger } from '../lib/log';
 import { joinChannel, leaveChannel } from './handlers/channels.handlers';
 import {
   cancelHandover,
@@ -33,6 +34,8 @@ import { on } from './lib/on';
 import { channelRoom, eventRoom } from './lib/rooms';
 import type { SocketServer } from './lib/types';
 import { validate } from './lib/validate';
+
+const log = logger('socket');
 
 /**
  * Attach displaces the HTTP server's request listeners, so /api/socket.io is handled
@@ -127,7 +130,7 @@ export function attachSocket(httpServer: ServerType): SocketServer {
           socketId: socket.id,
         });
       } catch (cause) {
-        console.error(`socket: could not send the handover snapshot to ${socket.id}`, cause);
+        log.error(`could not send the handover snapshot to ${socket.id}`, cause);
       }
       // A studio reconnecting onto a claim it still holds had that rebind published from
       // inside the handshake, before this socket could be addressed at all.

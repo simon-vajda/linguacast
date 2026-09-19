@@ -1,4 +1,5 @@
 import type { types } from 'mediasoup';
+import { logger } from '../../lib/log';
 import { AppError } from '../../lib/problem';
 import { type GrantCancellation, handover } from '../handover';
 import { listenerHistory } from '../listener-history';
@@ -23,6 +24,8 @@ export type { ChannelBroadcastStatus } from './room';
 
 import { type ChannelBroadcastStatus, markClosing, type Room } from './room';
 import { type WorkerFactory, WorkerPool } from './workers';
+
+const log = logger('media');
 
 /**
  * How long both interpreters may transmit at once when every listener has not yet swapped.
@@ -96,7 +99,7 @@ export async function startMedia(options: StartMediaOptions): Promise<void> {
   });
   const announcedIp = await announced.start();
   if (announcedIp !== options.net.announcedIp) {
-    console.log(`mediasoup: ${options.net.announcedIp} resolved to ${announcedIp}`);
+    log.info(`${options.net.announcedIp} resolved to ${announcedIp}`);
   }
 
   // The configured value is what the workers announce, hostname and all: `createTransport`
@@ -108,7 +111,7 @@ export async function startMedia(options: StartMediaOptions): Promise<void> {
     createWorker: options.createWorker,
   });
   await pool.start();
-  console.log(pool.startupSummary(announcedIp));
+  log.info(pool.startupSummary(announcedIp));
 
   const listeners = new ListenerCountPublisher({
     // A recount rather than a delta, and a room that has gone answers zero: the window is
@@ -157,8 +160,8 @@ export async function startMedia(options: StartMediaOptions): Promise<void> {
   };
 
   if (isUnroutableAnnouncedAddress(announcedIp)) {
-    console.warn(
-      `mediasoup: guests are told to connect to ${announcedIp}, which is a private or ` +
+    log.warn(
+      `guests are told to connect to ${announcedIp}, which is a private or ` +
         'loopback address; nobody outside this machine can reach it. Set PUBLIC_ADDRESS.',
     );
     return;
@@ -175,7 +178,7 @@ export async function startMedia(options: StartMediaOptions): Promise<void> {
     void discoverReflexiveAddress(stunUrl).then((reflexive) => {
       const mismatch = reflexiveMismatch(address, reflexive);
       if (mismatch) {
-        console.warn(mismatch);
+        log.warn(mismatch);
       }
     });
   };

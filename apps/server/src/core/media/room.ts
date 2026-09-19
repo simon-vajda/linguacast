@@ -1,7 +1,10 @@
 import type { types } from 'mediasoup';
+import { logger } from '../../lib/log';
 import { AppError } from '../../lib/problem';
 import { watchTransport } from './diagnostics';
 import { Peer, type TransportDirection } from './peer';
+
+const log = logger('media');
 
 function slugOf(producer: types.Producer): string {
   const slug = (producer.appData as { slug?: unknown }).slug;
@@ -284,10 +287,7 @@ export class Room {
         appData: { socketId, direction },
       });
     } catch (cause) {
-      console.error(
-        `media: could not create a ${direction} transport on event ${this.eventId}`,
-        cause,
-      );
+      log.error(`could not create a ${direction} transport on event ${this.eventId}`, cause);
       throw new AppError('media_unavailable', 'Could not allocate a media transport.');
     }
 

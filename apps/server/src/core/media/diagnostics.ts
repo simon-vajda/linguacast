@@ -1,15 +1,23 @@
 import type { types } from 'mediasoup';
+import { logger } from '../../lib/log';
 
 /**
- * Silent-failure telemetry. The failure this exists for is the one that reports success
- * everywhere: signalling completes, both screens read connected, and no RTP ever crosses
- * the network — a wrong announced address, a remapped or unforwarded RTC port, a browser
- * shield suppressing ICE candidates. None of those raise an error anywhere, so the only
- * way to see them is to say out loud what ICE and DTLS did and whether bytes moved.
+ * Silent-failure telemetry, split across the two logging tiers.
  *
- * Volume is a handful of lines per connection, which is why it is unconditional rather
- * than behind a flag: a flag would be off on the deployment that needed it.
+ * The failure this exists for is the one that reports success everywhere: signalling
+ * completes, both screens read connected, and no RTP ever crosses the network — a wrong
+ * announced address, a remapped or unforwarded RTC port, a browser shield suppressing ICE
+ * candidates. None of those raise an error anywhere, so the only way to see them is to
+ * check whether ICE connected and whether bytes moved, and say so when they did not.
+ *
+ * Those three checks are always-on: they are what a support ticket is diagnosed from, and
+ * their cost is one line per failure rather than per connection. The narration around
+ * them — transport lifecycle, ICE and DTLS progress, candidate addresses — is verbose,
+ * because a hundred-listener event would otherwise bury every line that matters under a
+ * thousand that do not, and because listeners' addresses are not a routine record to keep.
  */
+
+const log = logger('media');
 
 /** Long enough that an ordinary ICE handshake has finished, short enough to still be watching. */
 const SILENCE_CHECK_MS = 5_000;
@@ -29,31 +37,35 @@ export function watchTransport(
   eventId: number,
   direction: string,
 ): void {
-  const tag = `media[event ${eventId} ${direction} ${short(transport.id)}]`;
+  // A transport belongs to an event and a direction; there is one router per event, so it
+  // has no channel to name. The verbose tag adds the identifier that distinguishes two
+  // transports of the same shape, which is exactly what an always-on line must not carry.
+  const subject = `event ${eventId} ${direction}`;
+  const tag = `${subject} ${short(transport.id)}`;
   const candidates = transport.iceCandidates
     .map((candidate) => `${candidate.protocol}/${candidate.address}:${candidate.port}`)
     .join(' ');
-  console.log(`${tag} transport created, offering ${candidates || 'no candidates'}`);
+  log.verbose.info(`${tag} transport created, offering ${candidates || 'no candidates'}`);
 
   transport.on('icestatechange', (iceState) => {
     const line = `${tag} ice ${iceState}`;
     if (iceState === 'disconnected') {
-      console.warn(line);
+      log.verbose.warn(line);
     } else {
-      console.log(line);
+      log.verbose.info(line);
     }
   });
 
   transport.on('iceselectedtuplechange', (tuple) => {
-    console.log(`${tag} ice pair ${describe(tuple)}`);
+    log.verbose.info(`${tag} ice pair ${describe(tuple)}`);
   });
 
   transport.on('dtlsstatechange', (dtlsState) => {
     const line = `${tag} dtls ${dtlsState}`;
     if (dtlsState === 'failed') {
-      console.error(line);
+      log.verbose.error(line);
     } else {
-      console.log(line);
+      log.verbose.info(line);
     }
   });
 
@@ -64,8 +76,8 @@ export function watchTransport(
       return;
     }
     if (transport.iceState !== 'connected' && transport.iceState !== 'completed') {
-      console.warn(
-        `${tag} still ${transport.iceState}/${transport.dtlsState} after ${SILENCE_CHECK_MS}ms — ` +
+      log.warn(
+        `${subject} still ${transport.iceState}/${transport.dtlsState} after ${SILENCE_CHECK_MS}ms — ` +
           'no ICE connectivity. Check PUBLIC_ADDRESS, that the RTC ports are published ' +
           'one-to-one and open on UDP and TCP, and whether the client is suppressing candidates.',
       );
@@ -74,7 +86,7 @@ export function watchTransport(
   timer.unref();
   transport.observer.once('close', () => {
     clearTimeout(timer);
-    console.log(`${tag} transport closed`);
+    log.verbose.info(`${tag} transport closed`);
   });
 }
 
@@ -84,8 +96,9 @@ function totalBytes(stats: Array<{ type: string; byteCount: number }>, type: str
 
 /** ICE can be up and the media path still dead; bytes are the only proof audio moved. */
 export function watchProducer(producer: types.Producer, eventId: number, slug: string): void {
-  const tag = `media[event ${eventId} ${slug} producer ${short(producer.id)}]`;
-  console.log(`${tag} opened${producer.paused ? ' (paused)' : ''}`);
+  const subject = `event ${eventId} ${slug} producer`;
+  const tag = `${subject} ${short(producer.id)}`;
+  log.verbose.info(`${tag} opened${producer.paused ? ' (paused)' : ''}`);
 
   const timer = setTimeout(() => {
     if (producer.closed) {
@@ -96,12 +109,12 @@ export function watchProducer(producer: types.Producer, eventId: number, slug: s
       .then((stats) => {
         const bytes = totalBytes(stats, 'inbound-rtp');
         if (bytes === 0) {
-          console.warn(
-            `${tag} no RTP received after ${SILENCE_CHECK_MS}ms — the speaker is connected but ` +
-              'sending nothing that reaches this server.',
+          log.warn(
+            `${subject} no RTP received after ${SILENCE_CHECK_MS}ms — the speaker is connected ` +
+              'but sending nothing that reaches this server.',
           );
         } else {
-          console.log(`${tag} receiving RTP (${bytes} bytes)`);
+          log.verbose.info(`${tag} receiving RTP (${bytes} bytes)`);
         }
       })
       .catch(() => {});
@@ -109,12 +122,13 @@ export function watchProducer(producer: types.Producer, eventId: number, slug: s
   timer.unref();
   producer.observer.once('close', () => {
     clearTimeout(timer);
-    console.log(`${tag} closed`);
+    log.verbose.info(`${tag} closed`);
   });
 }
 
 export function watchConsumer(consumer: types.Consumer, eventId: number, slug: string): void {
-  const tag = `media[event ${eventId} ${slug} consumer ${short(consumer.id)}]`;
+  const subject = `event ${eventId} ${slug} consumer`;
+  const tag = `${subject} ${short(consumer.id)}`;
 
   const timer = setTimeout(() => {
     if (consumer.closed || consumer.paused) {
@@ -125,9 +139,9 @@ export function watchConsumer(consumer: types.Consumer, eventId: number, slug: s
       .then((stats) => {
         const bytes = totalBytes(stats, 'outbound-rtp');
         if (bytes === 0) {
-          console.warn(`${tag} no RTP sent after ${SILENCE_CHECK_MS}ms.`);
+          log.warn(`${subject} no RTP sent after ${SILENCE_CHECK_MS}ms.`);
         } else {
-          console.log(`${tag} sending RTP (${bytes} bytes)`);
+          log.verbose.info(`${tag} sending RTP (${bytes} bytes)`);
         }
       })
       .catch(() => {});

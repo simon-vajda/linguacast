@@ -3,6 +3,7 @@ import {
   ICE_RECOVERY_DELAY_MS,
 } from '@linguacast/client-core/media';
 import type { types } from 'mediasoup-client';
+import { logInfo, logWarn } from '../log';
 
 interface OfferedCandidate {
   address?: unknown;
@@ -14,11 +15,13 @@ interface OfferedCandidate {
  * `core/media/diagnostics.ts`. The failure worth naming is the one where every signalling
  * call succeeds and no audio ever moves — an unreachable announced address, a blocked RTC
  * port, a carrier offering only an address family the server never announced. Nothing
- * throws for any of them, so the log is the only place it can be seen.
+ * throws for any of them, so narration is the only place it can be seen during development.
+ *
+ * The sampling and the verdict it produces run in every build; only the narration is gated.
  */
 
 function log(message: string, ...rest: unknown[]): void {
-  console.info(`media: ${message}`, ...rest);
+  logInfo(`media: ${message}`, ...rest);
 }
 
 /** One direction exists here, so the tag is a constant rather than a parameter. */
@@ -40,12 +43,12 @@ export function watchTransport(
   });
 
   transport.on('icecandidateerror', (event) => {
-    console.warn(`media: ${tag} ice candidate error`, event.errorCode, event.errorText, event.url);
+    logWarn(`media: ${tag} ice candidate error`, event.errorCode, event.errorText, event.url);
   });
 
   transport.on('connectionstatechange', (next) => {
     if (next === 'failed' || next === 'disconnected') {
-      console.warn(`media: ${tag} connection ${next}`);
+      logWarn(`media: ${tag} connection ${next}`);
     } else {
       log(`${tag} connection ${next}`);
     }
@@ -75,9 +78,17 @@ export function reportTransportPath(transport: types.Transport): Promise<void> {
   return reportPath(transport, TAG).then(() => undefined);
 }
 
-type TransportPathReport = 'connected' | 'no-rtp' | 'no-pair' | 'candidate-address-family-mismatch';
+export type TransportPathReport =
+  | 'connected'
+  | 'no-rtp'
+  | 'no-pair'
+  | 'candidate-address-family-mismatch';
 
-async function reportPath(
+/**
+ * The stats sample and the verdict drawn from it. Exported because the verdict, not the
+ * narration around it, is what drives the listener's recovery affordance.
+ */
+export async function reportPath(
   transport: types.Transport,
   tag: string,
   remoteCandidates: OfferedCandidate[] = [],
@@ -109,7 +120,7 @@ async function reportPath(
   }
 
   if (pair === null) {
-    console.warn(
+    logWarn(
       `media: ${tag} has no nominated candidate pair after ${ICE_RECOVERY_DELAY_MS}ms — ` +
         'ICE never connected. A blocked RTC port and a carrier offering only an address ' +
         'family the server never announced both look exactly like this.',
@@ -128,7 +139,7 @@ async function reportPath(
       : 'no-pair';
   }
   if (bytes === 0) {
-    console.warn(`media: ${tag} connected on ${pair} but no RTP has moved.`);
+    logWarn(`media: ${tag} connected on ${pair} but no RTP has moved.`);
     return 'no-rtp';
   }
   log(`${tag} carrying RTP on ${pair} (${bytes} bytes)`);
@@ -186,6 +197,6 @@ export function watchConsumerTrack(track: MediaStreamTrack, slug: string): void 
   track.addEventListener('unmute', () =>
     log(`consumer track for ${slug} unmuted — audio arriving`),
   );
-  track.addEventListener('mute', () => console.warn(`media: consumer track for ${slug} muted`));
-  track.addEventListener('ended', () => console.warn(`media: consumer track for ${slug} ended`));
+  track.addEventListener('mute', () => logWarn(`media: consumer track for ${slug} muted`));
+  track.addEventListener('ended', () => logWarn(`media: consumer track for ${slug} ended`));
 }

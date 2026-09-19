@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import LinguacastAudio from '../../modules/linguacast-audio';
+import { logError } from '../log';
 import type { SystemControls } from './now-playing';
 
 /**
@@ -117,5 +118,5 @@ async function requestNotificationPermission(): Promise<void> {
 }
 
 function report(cause: unknown): void {
-  console.error('audio: the listening session could not be updated', cause);
+  logError('audio: the listening session could not be updated', cause);
 }

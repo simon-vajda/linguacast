@@ -1,4 +1,5 @@
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { logError } from '@/lib/log';
 import { createMediaSessionCarrierWave } from './media-session-carrier';
 
 export interface MediaSessionCarrier {
@@ -58,9 +59,7 @@ export function useMediaSessionCarrier(onInterrupted: () => void): MediaSessionC
       return;
     }
     requested.current = false;
-    void element
-      .play()
-      .catch((cause) => console.error('media: could not start audio carrier', cause));
+    void element.play().catch((cause) => logError('media: could not start audio carrier', cause));
   }, []);
 
   // Claimed before the call and never when the element is already paused: `pause()` on a
