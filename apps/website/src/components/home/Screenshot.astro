@@ -8,11 +8,10 @@ interface Props {
   widths: number[];
   sizes: string;
   fullWidth: number;
-  group: string;
   class: string;
 }
 
-const { image, alt, widths, sizes, fullWidth, group, class: className } = Astro.props;
+const { image, alt, widths, sizes, fullWidth, class: className } = Astro.props;
 const full = await getImage({
   src: image,
   width: Math.min(fullWidth, image.width),
@@ -23,9 +22,9 @@ const full = await getImage({
 <a
   href={full.src}
   class="zoom focus-outline"
-  data-lightbox={group}
-  data-width={full.attributes.width}
-  data-height={full.attributes.height}
+  data-pswp-width={full.attributes.width}
+  data-pswp-height={full.attributes.height}
+  target="_blank"
   aria-haspopup="dialog"
 >
   <Picture

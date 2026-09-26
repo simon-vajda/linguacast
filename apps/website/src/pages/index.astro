@@ -176,7 +176,7 @@ const shotFullWidth = 1206;
           eyebrow="Three roles"
           title="One account, for the administrator. Everyone else just needs a link or a QR code."
         />
-        <div class="grid roles">
+        <div class="grid roles" data-gallery>
           {
             roles.map((role) => (
               <article class="role">
@@ -187,7 +187,6 @@ const shotFullWidth = 1206;
                     widths={roleWidths}
                     sizes={roleSizes}
                     fullWidth={roleFullWidth}
-                    group="web"
                     class="role-shot"
                   />
                 </div>
@@ -234,7 +233,7 @@ const shotFullWidth = 1206;
             <StoreBadges />
           </div>
         </div>
-        <div class="shots">
+        <div class="shots" data-gallery>
           {
             shots.map((shot) => (
               <figure class="shot">
@@ -245,7 +244,6 @@ const shotFullWidth = 1206;
                     widths={shotWidths}
                     sizes={shotSizes}
                     fullWidth={shotFullWidth}
-                    group="mobile"
                     class="shot-image"
                   />
                 </div>
