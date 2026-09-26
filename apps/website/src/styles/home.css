@@ -129,7 +129,6 @@
   --shadow-phone: black -2px 1px 10px 2px;
   --lightbox-backdrop: oklch(0.22 0 0);
   --lightbox-edge: oklch(1 0 0 / 18%);
-  --duration-press: 120ms;
   --animate-pulse-live: pulse-live 2s ease-in-out infinite;
   --animate-ring: ring 2.6s ease-out infinite;
   --animate-ring-delayed: ring 2.6s ease-out 1.3s infinite;

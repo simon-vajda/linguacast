@@ -9,6 +9,7 @@ import webSpeaker from '../assets/screenshots/web-speaker.png';
 import ButtonLink from '../components/home/ButtonLink.astro';
 import Lightbox from '../components/home/Lightbox.astro';
 import ListenerPhoneMock from '../components/home/ListenerPhoneMock.astro';
+import { githubHref, installationHref } from '../components/home/links';
 import Screenshot from '../components/home/Screenshot.astro';
 import SectionHeading from '../components/home/SectionHeading.astro';
 import SiteFooter from '../components/home/SiteFooter.astro';
@@ -16,9 +17,6 @@ import SiteHeader from '../components/home/SiteHeader.astro';
 import StoreBadges from '../components/home/StoreBadges.astro';
 import StudioCardMock from '../components/home/StudioCardMock.astro';
 import HomeLayout from '../layouts/HomeLayout.astro';
-
-const installation = '/getting-started/installation/';
-const github = 'https://github.com/simon-vajda/hallspeak';
 
 const steps = [
   {
@@ -137,8 +135,8 @@ const shotFullWidth = 1206;
           language.
         </p>
         <div class="actions hero-actions">
-          <ButtonLink href={installation} size="pill">Get started</ButtonLink>
-          <ButtonLink href={github} size="pill" variant="secondary">View on GitHub</ButtonLink>
+          <ButtonLink href={installationHref} size="pill">Get started</ButtonLink>
+          <ButtonLink href={githubHref} size="pill" variant="secondary">View on GitHub</ButtonLink>
         </div>
         <div class="hero-stores">
           <StoreBadges note="Listener app for iPhone and Android" />
@@ -276,7 +274,7 @@ const shotFullWidth = 1206;
             </span>
           </div>
           <div class="actions panel-actions">
-            <ButtonLink href={installation} size="pill">Installation guide</ButtonLink>
+            <ButtonLink href={installationHref} size="pill">Installation guide</ButtonLink>
           </div>
         </div>
         <ul class="facts">

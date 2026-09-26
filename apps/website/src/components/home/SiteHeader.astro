@@ -2,10 +2,8 @@
 import { Image } from 'astro:assets';
 import logoMark from '../../assets/logo-mark.svg';
 import ButtonLink from './ButtonLink.astro';
+import { githubHref, installationHref } from './links';
 import ThemeToggle from './ThemeToggle.astro';
-
-const installation = '/getting-started/installation/';
-const github = 'https://github.com/simon-vajda/hallspeak';
 ---
 
 <header class="header">
@@ -15,10 +13,10 @@ const github = 'https://github.com/simon-vajda/hallspeak';
       <span class="name">Hallspeak</span>
     </a>
     <nav class="nav" aria-label="Main">
-      <ButtonLink href={installation} variant="ghost" class="wide-only">Docs</ButtonLink>
-      <ButtonLink href={github} variant="ghost" class="wide-only">GitHub</ButtonLink>
+      <ButtonLink href={installationHref} variant="ghost" class="wide-only">Docs</ButtonLink>
+      <ButtonLink href={githubHref} variant="ghost" class="wide-only">GitHub</ButtonLink>
       <ThemeToggle />
-      <ButtonLink href={installation}>Get started</ButtonLink>
+      <ButtonLink href={installationHref}>Get started</ButtonLink>
     </nav>
   </div>
 </header>

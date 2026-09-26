@@ -1,12 +1,13 @@
 ---
 import { Image } from 'astro:assets';
 import logoMark from '../../assets/logo-mark.svg';
+import { githubHref, installationHref } from './links';
 
 const links = [
-  { label: 'Installation', href: '/getting-started/installation/' },
+  { label: 'Installation', href: installationHref },
   { label: 'Hosting', href: '/getting-started/hosting/' },
   { label: 'Privacy policy', href: '/privacy/' },
-  { label: 'GitHub', href: 'https://github.com/simon-vajda/hallspeak' },
+  { label: 'GitHub', href: githubHref },
 ];
 ---
 
