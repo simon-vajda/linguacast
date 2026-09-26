@@ -1,0 +1,61 @@
+---
+import { getImage, Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  widths: number[];
+  sizes: string;
+  fullWidth: number;
+  group: string;
+  class: string;
+}
+
+const { image, alt, widths, sizes, fullWidth, group, class: className } = Astro.props;
+const full = await getImage({
+  src: image,
+  width: Math.min(fullWidth, image.width),
+  format: 'webp',
+});
+---
+
+<a
+  href={full.src}
+  class="zoom focus-outline"
+  data-lightbox={group}
+  data-width={full.attributes.width}
+  data-height={full.attributes.height}
+  aria-haspopup="dialog"
+>
+  <Picture
+    src={image}
+    alt={alt}
+    formats={['avif', 'webp']}
+    widths={widths}
+    sizes={sizes}
+    loading="lazy"
+    class={className}
+  />
+</a>
+
+<style>
+  .zoom {
+    position: relative;
+    display: block;
+    border-radius: inherit;
+    cursor: zoom-in;
+  }
+
+  .zoom::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    transition: background-color 150ms;
+  }
+
+  .zoom:hover::after {
+    background-color: var(--hover-overlay);
+  }
+</style>

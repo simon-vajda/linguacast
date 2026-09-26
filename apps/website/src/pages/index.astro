@@ -1,5 +1,4 @@
 ---
-import { Picture } from 'astro:assets';
 import { Check, ExternalLink, MicOff, Play, RefreshCw } from '@lucide/astro';
 import mobileChannel from '../assets/screenshots/mobile-channel.png';
 import mobileEvent from '../assets/screenshots/mobile-event.png';
@@ -8,7 +7,9 @@ import webAdmin from '../assets/screenshots/web-admin.png';
 import webListener from '../assets/screenshots/web-listener.png';
 import webSpeaker from '../assets/screenshots/web-speaker.png';
 import ButtonLink from '../components/home/ButtonLink.astro';
+import Lightbox from '../components/home/Lightbox.astro';
 import ListenerPhoneMock from '../components/home/ListenerPhoneMock.astro';
+import Screenshot from '../components/home/Screenshot.astro';
 import SectionHeading from '../components/home/SectionHeading.astro';
 import SiteFooter from '../components/home/SiteFooter.astro';
 import SiteHeader from '../components/home/SiteHeader.astro';
@@ -112,11 +113,12 @@ const facts = [
   { title: 'Open source', note: 'Read the code, file an issue, run it for free.' },
 ];
 
-const imageFormats = ['avif', 'webp'] as const;
 const roleWidths = [320, 640, 960];
 const roleSizes = '(min-width: 1120px) 288px, (min-width: 720px) 296px, 280px';
 const shotWidths = [240, 480];
 const shotSizes = '240px';
+const roleFullWidth = 2400;
+const shotFullWidth = 1206;
 ---
 
 <HomeLayout
@@ -178,15 +180,17 @@ const shotSizes = '240px';
           {
             roles.map((role) => (
               <article class="role">
-                <Picture
-                  src={role.image}
-                  alt={role.alt}
-                  formats={imageFormats}
-                  widths={roleWidths}
-                  sizes={roleSizes}
-                  loading="lazy"
-                  class="role-shot"
-                />
+                <div class="role-frame">
+                  <Screenshot
+                    image={role.image}
+                    alt={role.alt}
+                    widths={roleWidths}
+                    sizes={roleSizes}
+                    fullWidth={roleFullWidth}
+                    group="web"
+                    class="role-shot"
+                  />
+                </div>
                 <div class="role-text">
                   <h3 class="role-title">{role.title}</h3>
                   <p class="muted">{role.body}</p>
@@ -234,15 +238,17 @@ const shotSizes = '240px';
           {
             shots.map((shot) => (
               <figure class="shot">
-                <Picture
-                  src={shot.image}
-                  alt={shot.alt}
-                  formats={imageFormats}
-                  widths={shotWidths}
-                  sizes={shotSizes}
-                  loading="lazy"
-                  class="shot-image"
-                />
+                <div class="shot-frame">
+                  <Screenshot
+                    image={shot.image}
+                    alt={shot.alt}
+                    widths={shotWidths}
+                    sizes={shotSizes}
+                    fullWidth={shotFullWidth}
+                    group="mobile"
+                    class="shot-image"
+                  />
+                </div>
                 <figcaption>
                   <p class="shot-title">{shot.title}</p>
                   <p class="shot-note">{shot.note}</p>
@@ -292,6 +298,7 @@ const shotSizes = '240px';
     </section>
   </main>
   <SiteFooter />
+  <Lightbox />
 </HomeLayout>
 
 <style>
@@ -474,6 +481,14 @@ const shotSizes = '240px';
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
+  }
+
+  .role-frame {
+    border-radius: var(--radius-md);
+  }
+
+  .shot-frame {
+    border-radius: var(--radius-xl);
   }
 
   .role :global(.role-shot) {
