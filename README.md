@@ -1,4 +1,18 @@
-# Hallspeak
+<h1 align="center">
+  <a href="https://hallspeak.app">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/logo-on-dark.svg">
+      <img src=".github/assets/logo-on-light.svg" alt="Hallspeak — live interpretation, open to everyone." width="480">
+    </picture>
+  </a>
+</h1>
+
+<p align="center">
+  <a href="https://github.com/simon-vajda/hallspeak/releases"><img src="https://img.shields.io/github/v/release/simon-vajda/hallspeak?filter=server-v*&label=release" alt="Latest server release"></a>
+  <a href="https://github.com/simon-vajda/hallspeak/releases"><img src="https://img.shields.io/github/v/release/simon-vajda/hallspeak?filter=mobile-v*&label=release" alt="Latest mobile release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/simon-vajda/hallspeak" alt="License: AGPL-3.0"></a>
+  <a href="https://hallspeak.app"><img src="https://img.shields.io/badge/website-hallspeak.app-0bc3bc" alt="Website: hallspeak.app"></a>
+</p>
 
 Self-hosted simultaneous interpretation for live, in-person events. An interpreter speaks
 into a browser; guests in the room listen on their own phones, in their own language, with
@@ -6,6 +20,8 @@ as little delay as the network allows.
 
 It runs happily on a NAS or a home server. You own the whole thing: no cloud services, no
 subscription, and no account registration needed for anyone except the admin.
+
+Learn more at **[hallspeak.app](https://hallspeak.app)**.
 
 ## How it works
 
