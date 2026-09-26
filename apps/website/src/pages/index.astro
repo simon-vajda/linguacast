@@ -270,7 +270,7 @@ const shotFullWidth = 1206;
           <div class="domain">
             <span class="eyebrow domain-label">On your own domain</span>
             <span class="domain-chip">
-              <span class="muted">https://</span><span>hallspeak.yourdomain.com</span>
+              <span class="muted">https://</span><span>hallspeak.<wbr />yourdomain.com</span>
             </span>
           </div>
           <div class="actions panel-actions">
@@ -382,7 +382,7 @@ const shotFullWidth = 1206;
 
   .hero-title {
     margin: 0;
-    font-size: clamp(var(--text-display-min), 5.4vw, var(--text-screen-lg));
+    font-size: var(--hero-title);
     line-height: var(--text-screen-lg--line-height);
     letter-spacing: var(--text-screen-lg--letter-spacing);
     font-weight: 600;
@@ -616,14 +616,21 @@ const shotFullWidth = 1206;
 
   .domain-chip {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
     align-self: flex-start;
-    height: var(--size-touch);
-    padding: 0 var(--space-5);
-    border-radius: var(--radius-full);
+    max-width: 100%;
+    min-height: var(--size-touch);
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-lg);
     background: var(--background);
     font-family: var(--font-mono);
     font-size: var(--text-body);
+    overflow-wrap: anywhere;
+  }
+
+  .domain-chip > span {
+    min-width: 0;
   }
 
   .panel-actions {

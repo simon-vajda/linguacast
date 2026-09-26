@@ -123,6 +123,7 @@
   --section-y: clamp(var(--space-16), 8vw, var(--space-28));
   --hero-top: clamp(var(--space-14), 8vw, var(--space-28));
   --hero-gap: clamp(var(--space-12), 6vw, var(--space-20));
+  --hero-title: clamp(var(--text-display-min), 5.4vw, var(--text-screen-lg));
   --panel-pad: clamp(var(--space-6), 5vw, var(--space-14));
 
   --ring-card: inset 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);

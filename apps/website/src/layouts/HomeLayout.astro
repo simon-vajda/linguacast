@@ -17,17 +17,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script is:inline>
       (() => {
-        let stored = null;
-        try {
-          stored = localStorage.getItem('starlight-theme');
-        } catch {}
-        const theme =
-          stored === 'light' || stored === 'dark'
-            ? stored
-            : matchMedia('(prefers-color-scheme: light)').matches
-              ? 'light'
-              : 'dark';
-        document.documentElement.dataset.theme = theme;
+        const light = matchMedia('(prefers-color-scheme: light)');
+        const apply = () => {
+          let stored = null;
+          try {
+            stored = localStorage.getItem('starlight-theme');
+          } catch {}
+          document.documentElement.dataset.theme =
+            stored === 'light' || stored === 'dark' ? stored : light.matches ? 'light' : 'dark';
+        };
+        apply();
+        light.addEventListener('change', apply);
       })();
     </script>
     <title>{title}</title>
