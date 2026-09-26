@@ -369,7 +369,6 @@ const shotFullWidth = 1206;
   .hero {
     padding: var(--hero-top) var(--gutter) var(--section-y);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-hero)), 1fr));
     gap: var(--hero-gap);
     align-items: center;
   }
@@ -407,6 +406,7 @@ const shotFullWidth = 1206;
     padding-top: var(--space-6);
     border-top: 1px solid var(--border);
     align-self: stretch;
+    --store-badges-justify: center;
   }
 
   .hero-visual {
@@ -420,7 +420,15 @@ const shotFullWidth = 1206;
     display: none;
   }
 
-  @media (min-width: 40rem) {
+  @media (min-width: 64rem) {
+    .hero {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-stores {
+      --store-badges-justify: flex-start;
+    }
+
     .hero-visual {
       justify-content: flex-end;
     }

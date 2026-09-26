@@ -116,7 +116,6 @@
   --measure-col-step: 16.25rem;
   --measure-col-card: 20rem;
   --measure-col-split: 21.25rem;
-  --measure-col-hero: 27.5rem;
   --shell: 70rem;
 
   --gutter: clamp(var(--space-6), 4vw, var(--space-10));
