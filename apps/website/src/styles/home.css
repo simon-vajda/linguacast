@@ -126,6 +126,7 @@
   --panel-pad: clamp(var(--space-6), 5vw, var(--space-14));
 
   --ring-card: inset 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+  --shadow-phone: black -2px 1px 10px 2px;
   --lightbox-backdrop: oklch(0.22 0 0);
   --lightbox-edge: oklch(1 0 0 / 18%);
   --duration-press: 120ms;
