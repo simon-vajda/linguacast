@@ -1,0 +1,257 @@
+@import "@fontsource-variable/space-grotesk";
+
+/* Dark is the default so the page matches Starlight's no-JavaScript rendering; the head
+   script sets data-theme before first paint, from the same storage key Starlight uses. */
+:root {
+  color-scheme: dark;
+
+  --background: oklch(0.23 0.034 249.5);
+  --foreground: oklch(0.954 0.011 204.1);
+  --card: oklch(0.312 0.048 246.5);
+  --primary: oklch(0.738 0.126 190.2);
+  --primary-foreground: oklch(0.267 0.045 243.3);
+  --primary-hover: color-mix(in oklch, var(--primary), white 12%);
+  --primary-text: var(--primary);
+  --secondary: oklch(0.312 0.048 246.5);
+  --secondary-foreground: oklch(0.954 0.011 204.1);
+  --muted-foreground: oklch(0.734 0.033 222.2);
+  --border: oklch(0.365 0.051 246.4);
+  --ring: oklch(0.738 0.126 190.2);
+  --live: oklch(0.836 0.163 148.7);
+  --live-on-muted: oklch(0.836 0.163 148.7);
+  --live-muted: oklch(0.339 0.044 188.5);
+  --hover-overlay: oklch(from var(--foreground) l c h / 10%);
+  --hover-overlay-strong: oklch(from var(--foreground) l c h / 15%);
+
+  --font-sans: "Space Grotesk Variable", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.5;
+  --text-body-lg: 1.0625rem;
+  --text-body-lg--line-height: 1.6;
+  --text-action: 1rem;
+  --text-display-min: 2.25rem;
+  --text-screen: 1.875rem;
+  --text-screen--line-height: 1.06;
+  --text-screen--letter-spacing: -0.035em;
+  --text-screen-lg: 3.25rem;
+  --text-screen-lg--line-height: 1.03;
+  --text-screen-lg--letter-spacing: -0.045em;
+  --text-hero: 2.5rem;
+  --text-hero--line-height: 1.03;
+  --text-hero--letter-spacing: -0.045em;
+  --text-stat: 2rem;
+  --text-stat--letter-spacing: -0.045em;
+  --text-stat-lg: 2.25rem;
+  --text-stat-lg--letter-spacing: -0.045em;
+  --text-title: 1.375rem;
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.03em;
+  --text-subtitle: 1.1875rem;
+  --text-subtitle--line-height: 1.25;
+  --text-subtitle--letter-spacing: -0.025em;
+  --text-section: 1.0625rem;
+  --text-section--line-height: 1.4;
+  --text-section--letter-spacing: -0.03em;
+  --text-note: 0.8125rem;
+  --text-meta: 0.75rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--letter-spacing: 0.08em;
+
+  --radius: 1.25rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-full: 999px;
+
+  --space-0-5: 0.125rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-14: 3.5rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-28: 7rem;
+
+  --size-dot: 0.5rem;
+  --size-badge: 1.25rem;
+  --size-icon: 1rem;
+  --size-icon-lg: 1.25rem;
+  --size-icon-play: 2.5rem;
+  --size-control-sm: 1.75rem;
+  --size-control-icon: 2rem;
+  --size-logo: 2rem;
+  --size-logo-sm: 1.5rem;
+  --size-touch: 2.75rem;
+  --size-store-badge: 2.75rem;
+  --size-pill: 3rem;
+  --size-feature-disc: 3rem;
+  --size-meter: 1.25rem;
+  --size-play-target: 7.5rem;
+  --size-shot-min: 9.5rem;
+  --size-phone-w: 18rem;
+  --size-phone-h: 37rem;
+  --size-phone-rim: 0.5rem;
+  --size-studio-card: 23.75rem;
+  --size-hero-visual: 37.5rem;
+  --size-focus-halo: 3px;
+
+  --measure-note: 13.75rem;
+  --measure-copy: 27.5rem;
+  --measure-lede: 30rem;
+  --measure-heading: 38.75rem;
+  --measure-col-feature: 15rem;
+  --measure-col-step: 16.25rem;
+  --measure-col-card: 20rem;
+  --measure-col-split: 21.25rem;
+  --measure-col-hero: 27.5rem;
+  --shell: 70rem;
+
+  --gutter: clamp(var(--space-6), 4vw, var(--space-10));
+  --section-y: clamp(var(--space-16), 8vw, var(--space-28));
+  --hero-top: clamp(var(--space-14), 8vw, var(--space-28));
+  --hero-gap: clamp(var(--space-12), 6vw, var(--space-20));
+  --panel-pad: clamp(var(--space-6), 5vw, var(--space-14));
+
+  --ring-card: inset 0 0 0 1px color-mix(in oklch, var(--foreground) 10%, transparent);
+  --duration-press: 120ms;
+  --animate-pulse-live: pulse-live 2s ease-in-out infinite;
+  --animate-ring: ring 2.6s ease-out infinite;
+  --animate-ring-delayed: ring 2.6s ease-out 1.3s infinite;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --background: oklch(0.983 0.003 197.1);
+  --foreground: oklch(0.307 0.052 251.8);
+  --card: oklch(1 0 0);
+  --primary-hover: color-mix(in oklch, var(--primary), black 8%);
+  /* The brand teal is about 2.1:1 on the light background; teal text uses this AA teal. */
+  --primary-text: #00756f;
+  --secondary: oklch(0.946 0.009 205.9);
+  --secondary-foreground: oklch(0.307 0.052 251.8);
+  --muted-foreground: oklch(0.492 0.036 241.3);
+  --border: oklch(0.909 0.015 207.1);
+  --live: oklch(0.777 0.142 168.5);
+  --live-on-muted: oklch(0.445 0.088 166.5);
+  --live-muted: oklch(0.943 0.03 172.9);
+  --hover-overlay: oklch(from var(--foreground) l c h / 6%);
+  --hover-overlay-strong: oklch(from var(--foreground) l c h / 10%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--primary) 30%, transparent);
+}
+
+.text-link:hover {
+  color: var(--primary-text);
+}
+
+.focus-outline:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.focus-halo:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 var(--size-focus-halo) color-mix(in oklch, var(--ring) 50%, transparent);
+}
+
+.hover-overlay:hover {
+  background-image: linear-gradient(var(--hover-overlay), var(--hover-overlay));
+}
+
+.hover-overlay-strong:hover {
+  background-image: linear-gradient(var(--hover-overlay-strong), var(--hover-overlay-strong));
+}
+
+.hover-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.press:active {
+  transform: translateY(1px);
+}
+
+.pulse-live {
+  animation: var(--animate-pulse-live);
+}
+
+.ring {
+  animation: var(--animate-ring);
+}
+
+.ring-delayed {
+  animation: var(--animate-ring-delayed);
+}
+
+@keyframes pulse-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The live dot is a status: hold it solid rather than hide it. */
+  .pulse-live {
+    animation: none;
+  }
+  /* Rings stop on the resting frame so no half-scaled ghost is left behind. */
+  .ring,
+  .ring-delayed {
+    animation: none;
+    transform: scale(1);
+    opacity: 0.45;
+  }
+}

@@ -1,0 +1,158 @@
+---
+import LiveBadge from './LiveBadge.astro';
+
+const level = '62%';
+const peak = '74%';
+---
+
+<div class="card">
+  <div class="top">
+    <LiveBadge />
+    <span class="meta">Speaker studio</span>
+  </div>
+  <div>
+    <p class="event meta">Sunday Service</p>
+    <p class="channel">Español</p>
+  </div>
+  <div class="meter">
+    <div class="meter-head">
+      <span class="label">Input level</span>
+      <span class="status">Sounds good</span>
+    </div>
+    <div class="track-wrap">
+      <div class="track"><div class="fill" style={{ width: level }}></div></div>
+      <div class="peak" style={{ left: peak }}></div>
+      <div class="clip"></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">12:48</div>
+      <div class="label stat-label">On air</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    position: absolute;
+    left: 0;
+    top: var(--space-10);
+    width: min(76%, var(--size-studio-card));
+    background: var(--card);
+    box-shadow: var(--ring-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .meta {
+    font-size: var(--text-meta);
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .event {
+    margin: 0 0 var(--space-1);
+  }
+
+  .channel {
+    margin: 0;
+    font-size: var(--text-title);
+    line-height: var(--text-title--line-height);
+    letter-spacing: var(--text-title--letter-spacing);
+    font-weight: 600;
+  }
+
+  .meter-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .label {
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .status {
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: var(--live-on-muted);
+  }
+
+  .track-wrap {
+    position: relative;
+    height: var(--size-meter);
+  }
+
+  .track {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: var(--live);
+  }
+
+  .peak,
+  .clip {
+    position: absolute;
+    width: var(--space-0-5);
+    border-radius: var(--radius-full);
+  }
+
+  .peak {
+    top: 0;
+    bottom: 0;
+    transform: translateX(-50%);
+    background: color-mix(in oklch, var(--foreground) 60%, transparent);
+  }
+
+  .clip {
+    top: calc(-1 * var(--space-1));
+    bottom: calc(-1 * var(--space-1));
+    left: 85%;
+    background: color-mix(in oklch, var(--foreground) 35%, transparent);
+  }
+
+  .stats {
+    width: 40%;
+  }
+
+  .stat {
+    border-radius: var(--radius-lg);
+    background: var(--secondary);
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .stat-value {
+    font-size: var(--text-stat-lg);
+    line-height: 1;
+    letter-spacing: var(--text-stat-lg--letter-spacing);
+    font-weight: 600;
+  }
+
+  .stat-label {
+    margin-top: var(--space-1);
+  }
+</style>

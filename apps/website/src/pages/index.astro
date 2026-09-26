@@ -1,0 +1,650 @@
+---
+import { Picture } from 'astro:assets';
+import { Check, ExternalLink, MicOff, Play, RefreshCw } from '@lucide/astro';
+import mobileChannel from '../assets/screenshots/mobile-channel.png';
+import mobileEvent from '../assets/screenshots/mobile-event.png';
+import mobileHome from '../assets/screenshots/mobile-home.png';
+import webAdmin from '../assets/screenshots/web-admin.png';
+import webListener from '../assets/screenshots/web-listener.png';
+import webSpeaker from '../assets/screenshots/web-speaker.png';
+import ButtonLink from '../components/home/ButtonLink.astro';
+import ListenerPhoneMock from '../components/home/ListenerPhoneMock.astro';
+import SectionHeading from '../components/home/SectionHeading.astro';
+import SiteFooter from '../components/home/SiteFooter.astro';
+import SiteHeader from '../components/home/SiteHeader.astro';
+import StoreBadges from '../components/home/StoreBadges.astro';
+import StudioCardMock from '../components/home/StudioCardMock.astro';
+import HomeLayout from '../layouts/HomeLayout.astro';
+
+const installation = '/getting-started/installation/';
+const github = 'https://github.com/simon-vajda/hallspeak';
+
+const steps = [
+  {
+    title: 'Create an event',
+    body: 'An Event is one occasion — a service, a session, a talk. Add one Channel per target language. The Event gets a QR code to print and a link to share.',
+  },
+  {
+    title: 'The interpreter goes live',
+    body: 'Each Channel has its own Speaker code. Whoever holds it opens the speaker studio in a browser, picks a microphone and goes live.',
+  },
+  {
+    title: 'Guests listen',
+    body: 'Guests scan the QR code or open the link, pick a Channel and listen on their own phone. No sign-up, and any modern browser works.',
+  },
+];
+
+const roles = [
+  {
+    image: webAdmin,
+    alt: 'The Hallspeak admin console: the events list with PINs, channels and status',
+    title: 'Organiser',
+    body: 'Signs in to the admin console, creates events and channels, and prints the QR code for the seats or shares the link.',
+  },
+  {
+    image: webSpeaker,
+    alt: 'The Hallspeak speaker studio on air, with listener reports, stats and the input level',
+    title: 'Interpreter',
+    body: 'Opens the speaker link, checks the mic on the level meter and goes live. Nothing to install.',
+  },
+  {
+    image: webListener,
+    alt: 'The Hallspeak listener page, on air',
+    title: 'Guest',
+    body: 'Scans the QR code or opens the link, picks a language and listens. No account, no name, no email.',
+  },
+];
+
+const features = [
+  {
+    icon: RefreshCw,
+    title: 'Handover without a gap',
+    body: 'Two interpreters sharing a Channel swap through a handover, so neither is cut off mid-sentence and the audio has no gap.',
+  },
+  {
+    icon: MicOff,
+    title: 'Issue reports',
+    body: 'Listeners can send an anonymous report — too quiet, too loud, static, noise, silence — that the interpreter sees in the studio.',
+  },
+  {
+    icon: Play,
+    title: 'Background playback',
+    body: 'Audio keeps playing with the screen locked, in the browser and in the app.',
+  },
+  {
+    icon: ExternalLink,
+    title: 'Any modern browser',
+    body: 'The listener and the speaker studio both run in the browser. The app is optional.',
+  },
+];
+
+const shots = [
+  {
+    image: mobileHome,
+    alt: 'The Hallspeak app home screen with Scan QR code and pinned and recent events',
+    title: 'Join',
+    note: 'Scan the code at the venue, or pick up a pinned or recent event.',
+  },
+  {
+    image: mobileEvent,
+    alt: 'An event in the Hallspeak app with its channels',
+    title: 'Choose a channel',
+    note: 'Channels turn on when their interpreter connects.',
+  },
+  {
+    image: mobileChannel,
+    alt: 'The Hallspeak app listening to a channel on air',
+    title: 'Listen',
+    note: 'Keeps playing and reconnects with the screen locked.',
+  },
+];
+
+const facts = [
+  { title: 'One Docker image', note: 'Runs behind your own reverse proxy.' },
+  {
+    title: 'No cloud services, no subscription',
+    note: 'Audio goes from your server to the phones in the room.',
+  },
+  {
+    title: 'One account, for the administrator',
+    note: 'Possession of a link or code is the whole authorization.',
+  },
+  { title: 'Open source', note: 'Read the code, file an issue, run it for free.' },
+];
+
+const imageFormats = ['avif', 'webp'] as const;
+const roleWidths = [320, 640, 960];
+const roleSizes = '(min-width: 1120px) 288px, (min-width: 720px) 296px, 280px';
+const shotWidths = [240, 480];
+const shotSizes = '240px';
+---
+
+<HomeLayout
+  title="Hallspeak — Simultaneous interpretation for live events"
+  description="Hallspeak is free, self-hosted simultaneous interpretation for live, in-person events. Interpreters speak into a browser; guests listen on their own phones, with no sign-up."
+>
+  <SiteHeader />
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow">Free, open source, self-hosted</p>
+        <h1 class="hero-title">Simultaneous interpretation for live events</h1>
+        <p class="hero-lede">
+          Self-hosted simultaneous interpretation for live, in-person events. An interpreter
+          speaks into a browser; guests in the room listen on their own phones, in their own
+          language.
+        </p>
+        <div class="actions hero-actions">
+          <ButtonLink href={installation} size="pill">Get started</ButtonLink>
+          <ButtonLink href={github} size="pill" variant="secondary">View on GitHub</ButtonLink>
+        </div>
+        <div class="hero-stores">
+          <StoreBadges note="Listener app for iPhone and Android" />
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="studio"><StudioCardMock /></div>
+        <ListenerPhoneMock />
+      </div>
+    </section>
+
+    <section class="rule-top">
+      <div class="shell section">
+        <SectionHeading
+          eyebrow="How it works"
+          title="One event, one channel per language, a QR code for the room"
+        />
+        <ol class="grid steps">
+          {
+            steps.map((step, i) => (
+              <li class="step">
+                <span class="step-number">{i + 1}</span>
+                <h3 class="step-title">{step.title}</h3>
+                <p class="muted">{step.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="shell section">
+        <SectionHeading
+          eyebrow="Three roles"
+          title="One account, for the administrator. Everyone else just needs a link or a QR code."
+        />
+        <div class="grid roles">
+          {
+            roles.map((role) => (
+              <article class="role">
+                <Picture
+                  src={role.image}
+                  alt={role.alt}
+                  formats={imageFormats}
+                  widths={roleWidths}
+                  sizes={roleSizes}
+                  loading="lazy"
+                  class="role-shot"
+                />
+                <div class="role-text">
+                  <h3 class="role-title">{role.title}</h3>
+                  <p class="muted">{role.body}</p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell section">
+        <SectionHeading eyebrow="Built for the room" title="What happens during a live event" />
+        <div class="grid features">
+          {
+            features.map((feature) => (
+              <div class="feature">
+                <div class="feature-disc">
+                  <feature.icon class="feature-icon" />
+                </div>
+                <h3 class="feature-title">{feature.title}</h3>
+                <p class="muted">{feature.body}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="rule-top">
+      <div class="shell section split mobile">
+        <div class="split-copy">
+          <SectionHeading eyebrow="Mobile app" title="Join the events you attend often" />
+          <p class="lede">
+            The Hallspeak app for iPhone and Android remembers the events you have joined, so
+            coming back next week is one tap. It also reconnects by itself when the phone
+            switches network, even with the screen locked.
+          </p>
+          <div class="mobile-stores">
+            <StoreBadges />
+          </div>
+        </div>
+        <div class="shots">
+          {
+            shots.map((shot) => (
+              <figure class="shot">
+                <Picture
+                  src={shot.image}
+                  alt={shot.alt}
+                  formats={imageFormats}
+                  widths={shotWidths}
+                  sizes={shotSizes}
+                  loading="lazy"
+                  class="shot-image"
+                />
+                <figcaption>
+                  <p class="shot-title">{shot.title}</p>
+                  <p class="shot-note">{shot.note}</p>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="shell self-hosted">
+      <div class="panel split">
+        <div class="split-copy">
+          <SectionHeading
+            eyebrow="Run your own"
+            title="Your server. Hallspeak never learns who is listening."
+          />
+          <p class="lede">
+            Hallspeak is for churches, schools, conferences and anyone else running an event in
+            more than one language. It runs on a NAS or a modest home server that you own.
+          </p>
+          <div class="domain">
+            <span class="eyebrow domain-label">On your own domain</span>
+            <span class="domain-chip">
+              <span class="muted">https://</span><span>hallspeak.yourdomain.com</span>
+            </span>
+          </div>
+          <div class="actions panel-actions">
+            <ButtonLink href={installation} size="pill">Installation guide</ButtonLink>
+          </div>
+        </div>
+        <ul class="facts">
+          {
+            facts.map((fact) => (
+              <li class="fact">
+                <Check class="fact-icon" />
+                <div>
+                  <p class="fact-title">{fact.title}</p>
+                  <p class="fact-note">{fact.note}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</HomeLayout>
+
+<style>
+  .shell {
+    max-width: var(--shell);
+    margin: 0 auto;
+  }
+
+  .section {
+    padding: var(--section-y) var(--gutter);
+  }
+
+  .rule-top {
+    border-top: 1px solid var(--border);
+  }
+
+  .band {
+    background: var(--secondary);
+  }
+
+  .muted {
+    margin: 0;
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .eyebrow {
+    margin: 0 0 var(--space-5);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .lede {
+    margin: var(--space-5) 0 0;
+    max-width: var(--measure-copy);
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .grid {
+    display: grid;
+    margin: var(--space-12) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-split)), 1fr));
+  }
+
+  .split-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Hero */
+
+  .hero {
+    padding: var(--hero-top) var(--gutter) var(--section-y);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-hero)), 1fr));
+    gap: var(--hero-gap);
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: clamp(var(--text-display-min), 5.4vw, var(--text-screen-lg));
+    line-height: var(--text-screen-lg--line-height);
+    letter-spacing: var(--text-screen-lg--letter-spacing);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  .hero-lede {
+    margin: var(--space-6) 0 0;
+    max-width: var(--measure-lede);
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .hero-actions {
+    margin-top: var(--space-8);
+  }
+
+  .hero-stores {
+    margin-top: var(--space-12);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+    align-self: stretch;
+  }
+
+  .hero-visual {
+    position: relative;
+    min-height: var(--size-hero-visual);
+    display: flex;
+    justify-content: center;
+  }
+
+  .studio {
+    display: none;
+  }
+
+  @media (min-width: 40rem) {
+    .hero-visual {
+      justify-content: flex-end;
+    }
+
+    .studio {
+      display: contents;
+    }
+  }
+
+  /* How it works */
+
+  .steps {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-step)), 1fr));
+    gap: var(--space-6);
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-top: var(--space-6);
+    border-top: 2px solid var(--primary);
+  }
+
+  .step-number {
+    font-size: var(--text-stat);
+    line-height: 1;
+    letter-spacing: var(--text-stat--letter-spacing);
+    font-weight: 600;
+    color: var(--primary-text);
+  }
+
+  .step-title,
+  .feature-title {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-section);
+    line-height: var(--text-section--line-height);
+    letter-spacing: var(--text-section--letter-spacing);
+    font-weight: 600;
+  }
+
+  /* Three roles */
+
+  .roles {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-card)), 1fr));
+    gap: var(--space-5);
+  }
+
+  .role {
+    background: var(--card);
+    box-shadow: var(--ring-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .role :global(.role-shot) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4140 / 2797;
+    object-fit: cover;
+    object-position: top left;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+
+  .role-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .role-title {
+    margin: 0;
+    font-size: var(--text-subtitle);
+    line-height: var(--text-subtitle--line-height);
+    letter-spacing: var(--text-subtitle--letter-spacing);
+    font-weight: 600;
+  }
+
+  /* Built for the room */
+
+  .features {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--measure-col-feature)), 1fr));
+    gap: var(--space-10) var(--space-6);
+  }
+
+  .feature {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .feature-disc {
+    width: var(--size-feature-disc);
+    height: var(--size-feature-disc);
+    border-radius: var(--radius-full);
+    background: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-text);
+  }
+
+  .feature :global(.feature-icon) {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+  }
+
+  /* Mobile app */
+
+  .mobile {
+    gap: var(--space-14);
+    align-items: center;
+  }
+
+  .mobile-stores {
+    margin-top: var(--space-8);
+  }
+
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(var(--size-shot-min), 1fr));
+    gap: var(--space-4);
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+  }
+
+  .shot {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .shot :global(.shot-image) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1206 / 2622;
+    object-fit: cover;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+  }
+
+  .shot-title {
+    margin: 0;
+    font-size: var(--text-body);
+    font-weight: 600;
+  }
+
+  .shot-note,
+  .fact-note {
+    margin: var(--space-0-5) 0 0;
+    font-size: var(--text-note);
+    color: var(--muted-foreground);
+  }
+
+  /* Run your own */
+
+  .self-hosted {
+    padding: 0 var(--gutter) var(--section-y);
+  }
+
+  .panel {
+    background: var(--secondary);
+    border-radius: var(--radius-lg);
+    padding: var(--panel-pad);
+    gap: var(--space-12);
+  }
+
+  .domain {
+    margin-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .domain-label {
+    margin: 0;
+  }
+
+  .domain-chip {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    height: var(--size-touch);
+    padding: 0 var(--space-5);
+    border-radius: var(--radius-full);
+    background: var(--background);
+    font-family: var(--font-mono);
+    font-size: var(--text-body);
+  }
+
+  .panel-actions {
+    margin-top: var(--space-8);
+  }
+
+  .facts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fact {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fact :global(.fact-icon) {
+    flex-shrink: 0;
+    width: var(--size-icon);
+    height: var(--size-icon);
+    margin-top: var(--space-0-5);
+    color: var(--primary-text);
+  }
+
+  .fact-title {
+    margin: 0;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+import { ChevronLeft, MessageCircleWarning, Pause, Sun } from '@lucide/astro';
+import LiveBadge from './LiveBadge.astro';
+
+const bars = [2, 3, 4, 5, 6, 5, 4, 3, 2];
+const activeBars = 7;
+---
+
+<div class="phone">
+  <div class="bar">
+    <span class="title"><ChevronLeft class="icon" />Sunday Service</span>
+    <Sun class="icon" />
+  </div>
+  <div class="body">
+    <LiveBadge />
+    <p class="channel">Español</p>
+    <div class="target">
+      <span class="ring"></span>
+      <span class="ring-delayed"></span>
+      <Pause class="pause" fill="currentColor" />
+    </div>
+    <div class="connection">
+      <div class="bars">
+        {
+          bars.map((step, i) => (
+            <span
+              class:list={['wave', { on: i < activeBars }]}
+              style={{ height: `var(--space-${step})` }}
+            />
+          ))
+        }
+      </div>
+      <p class="connection-text">Good connection</p>
+    </div>
+    <p class="note">Headphones recommended, so the room stays quiet for everyone else.</p>
+  </div>
+  <div class="foot">
+    <span class="report"><MessageCircleWarning class="icon" />Report a problem</span>
+  </div>
+</div>
+
+<style>
+  .phone {
+    position: relative;
+    z-index: 1;
+    width: var(--size-phone-w);
+    height: var(--size-phone-h);
+    flex-shrink: 0;
+    background: var(--background);
+    border: 1px solid var(--border);
+    outline: var(--size-phone-rim) solid var(--secondary);
+    border-radius: var(--radius-3xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bar {
+    padding: var(--space-5) var(--space-5) var(--space-4);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-section);
+    font-weight: 600;
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .icon {
+    width: var(--size-icon);
+    height: var(--size-icon);
+    flex-shrink: 0;
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .channel {
+    margin: var(--space-3) 0 var(--space-12);
+    font-size: var(--text-hero);
+    line-height: var(--text-hero--line-height);
+    letter-spacing: var(--text-hero--letter-spacing);
+    font-weight: 600;
+  }
+
+  .target {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-play-target);
+    height: var(--size-play-target);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .ring,
+  .ring-delayed {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--primary);
+  }
+
+  .pause {
+    width: var(--size-icon-play);
+    height: var(--size-icon-play);
+  }
+
+  .connection {
+    margin-top: var(--space-12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .bars {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-1);
+  }
+
+  .wave {
+    width: var(--space-1);
+    border-radius: var(--radius-full);
+    background: var(--border);
+  }
+
+  .wave.on {
+    background: var(--primary);
+  }
+
+  .connection-text {
+    margin: 0;
+    font-size: var(--text-meta);
+    color: var(--muted-foreground);
+  }
+
+  .note {
+    margin: var(--space-4) 0 0;
+    max-width: var(--measure-note);
+    font-size: var(--text-note);
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+
+  .foot {
+    padding: 0 var(--space-5) var(--space-6);
+    display: flex;
+  }
+
+  .report {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+    height: var(--size-pill);
+    border-radius: var(--radius-full);
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+    font-size: var(--text-action);
+    font-weight: 600;
+  }
+</style>
