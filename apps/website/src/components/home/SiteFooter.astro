@@ -1,0 +1,66 @@
+---
+import { Image } from 'astro:assets';
+import logoMark from '../../assets/logo-mark.svg';
+import { githubHref, installationHref } from './links';
+
+const links = [
+  { label: 'Installation', href: installationHref },
+  { label: 'Hosting', href: '/getting-started/hosting/' },
+  { label: 'Privacy policy', href: '/privacy/' },
+  { label: 'GitHub', href: githubHref },
+];
+---
+
+<footer class="footer">
+  <div class="inner">
+    <div class="brand">
+      <Image src={logoMark} alt="" class="logo" />
+      <span class="name">Hallspeak</span>
+    </div>
+    <nav class="links" aria-label="Footer">
+      {links.map((link) => <a href={link.href} class="text-link focus-outline">{link.label}</a>)}
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+  }
+
+  .inner {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: var(--space-6) var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .logo {
+    display: block;
+    width: auto;
+    height: var(--size-logo-sm);
+  }
+
+  .name {
+    font-weight: 600;
+    letter-spacing: var(--text-section--letter-spacing);
+  }
+
+  .links {
+    display: flex;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+    font-size: var(--text-note);
+    color: var(--muted-foreground);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import { Moon, Sun } from '@lucide/astro';
+---
+
+<button
+  type="button"
+  class="toggle hover-overlay-strong focus-halo press"
+  aria-label="Switch theme"
+  data-theme-toggle
+>
+  <Sun class="icon sun" />
+  <Moon class="icon moon" />
+</button>
+
+<script>
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const root = document.documentElement;
+      const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('starlight-theme', next);
+      } catch {}
+    });
+  });
+</script>
+
+<style>
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-control-icon);
+    height: var(--size-control-icon);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+  }
+
+  .icon {
+    width: var(--size-icon);
+    height: var(--size-icon);
+  }
+
+  :global(:root[data-theme='light']) .sun,
+  :global(:root:not([data-theme='light'])) .moon {
+    display: none;
+  }
+</style>

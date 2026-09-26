@@ -1,0 +1,33 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+}
+
+const { eyebrow, title } = Astro.props;
+---
+
+<p class="eyebrow">{eyebrow}</p>
+<h2 class="title">{title}</h2>
+
+<style>
+  .eyebrow {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .title {
+    margin: 0;
+    max-width: var(--measure-heading);
+    font-size: var(--text-screen);
+    line-height: var(--text-screen--line-height);
+    letter-spacing: var(--text-screen--letter-spacing);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+</style>

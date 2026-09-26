@@ -1,0 +1,35 @@
+---
+import 'photoswipe/style.css';
+---
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+  new PhotoSwipeLightbox({
+    gallery: '[data-gallery]',
+    children: 'a[data-pswp-width]',
+    pswpModule: () => import('photoswipe'),
+    bgOpacity: 0.85,
+    paddingFn: (viewport) =>
+      viewport.x < 640
+        ? { top: 64, bottom: 64, left: 0, right: 0 }
+        : { top: 64, bottom: 64, left: 80, right: 80 },
+    showHideAnimationType: 'zoom',
+    closeTitle: 'Close',
+    zoomTitle: 'Zoom',
+    arrowPrevTitle: 'Previous screenshot',
+    arrowNextTitle: 'Next screenshot',
+    errorMsg: 'The screenshot could not be loaded.',
+  }).init();
+</script>
+
+<style is:global>
+  .pswp {
+    --pswp-bg: var(--lightbox-backdrop);
+    --pswp-placeholder-bg: var(--lightbox-backdrop);
+  }
+
+  .pswp__img {
+    box-shadow: 0 0 0 1px var(--lightbox-edge);
+  }
+</style>
